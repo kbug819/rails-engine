@@ -44,8 +44,8 @@ group :development, :test do
   gem "factory_bot_rails"
   gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'main'
   gem "simplecov"
-  gem 'jsonapi-serializer'
   gem 'shoulda-matchers'
+  gem 'jsonapi-serializer'
 
 
 end

@@ -138,7 +138,7 @@ describe "Items API" do
     expect(item.name).to eq("Kaylee's Item")
   end
 
-  xit "can update an existing item" do
+  xit "can update an existing item, but returns error with incorrect merchant id" do
     merchant_id = 200
     id = create(:item).id
     previous_merchant = Item.find_by(id: id).merchant_id
