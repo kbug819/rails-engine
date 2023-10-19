@@ -12,7 +12,6 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
-
   def create
     new_item = Item.new(item_params)
     new_item.save
@@ -37,11 +36,8 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def destroy
-    if Item.delete(params[:id])
+    Item.delete(params[:id])
       head :no_content
-    else
-      head :not_found
-    end
   end
 
 private
