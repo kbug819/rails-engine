@@ -31,10 +31,10 @@ class Api::V1::ItemsController < ApplicationController
       else
         render json: ErrorMerchantSerializer.new(merchant).serialized_json, status: 404
       end
-  else
-    render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created
+    else
+      render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created
+    end
   end
-end
 
   def destroy
     if Item.delete(params[:id])
