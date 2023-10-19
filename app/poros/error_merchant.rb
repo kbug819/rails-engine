@@ -1,4 +1,4 @@
-class ErrorItem
+class ErrorMerchant
 
   attr_reader :error_message, :status, :code
   def initialize(error_message, status, code)

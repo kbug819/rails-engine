@@ -12,15 +12,27 @@ class Item < ApplicationRecord
 
   def self.find_all_items(params)
     if params["name"] && params["min_price"].present?
-      items = []
+      items = "error"
+    elsif params["name"] && params["max_price"].present?
+      items = "error"
     elsif params["name"].present?
-      Item.where('lower(name) LIKE lower(?)', "%#{params["name"]}%").order(:name)
+      items = Item.where('lower(name) LIKE lower(?)', "%#{params["name"]}%").order(:name)
+    elsif params["min_price"] && params["max_price"].present?
+      items = Item.where('unit_price >= ? AND unit_price <= ?', "#{params["min_price"]}", "#{params["max_price"]}" ).order(unit_price: :desc)
     elsif params["min_price"].present?
-      Item.where('unit_price >= ?', "#{params["min_price"]}").order(unit_price: :desc)
+      if params["min_price"].to_i < 0
+        items = "error"
+      else
+        items = Item.where('unit_price >= ?', "#{params["min_price"]}").order(unit_price: :desc)
+      end
     elsif params["max_price"].present?
-      Item.where('unit_price <= ?', "#{params["max_price"]}").order(unit_price: :desc)
+      if params["max_price"].to_i < 0
+        items = "error"
+      else
+        items = Item.where('unit_price <= ?', "#{params["max_price"]}").order(unit_price: :desc)
+      end
     else
-      return []
+      items = []
     end
   end
 end
