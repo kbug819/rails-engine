@@ -7,6 +7,7 @@ class Item < ApplicationRecord
   validates :unit_price, presence: true
 
   def self.find_one_item(query)
+    require 'pry';binding.pry
     Item.where('lower(name) LIKE lower(?)', "%#{query}%").order(:name).limit(1)
   end
 
@@ -14,13 +15,13 @@ class Item < ApplicationRecord
     if params["name"] && params["min_price"].present?
       items = []
     elsif params["name"].present?
-      Item.where('lower(name) LIKE lower(?)', "%#{params["name"]}%").order(:name)
+      items = Item.where('lower(name) LIKE lower(?)', "%#{params["name"]}%").order(:name)
     elsif params["min_price"].present?
-      Item.where('unit_price >= ?', "#{params["min_price"]}").order(unit_price: :desc)
+      items = Item.where('unit_price >= ?', "#{params["min_price"]}").order(unit_price: :desc)
     elsif params["max_price"].present?
-      Item.where('unit_price <= ?', "#{params["max_price"]}").order(unit_price: :desc)
+      items = Item.where('unit_price <= ?', "#{params["max_price"]}").order(unit_price: :desc)
     else
-      return []
+      items = []
     end
   end
 end
