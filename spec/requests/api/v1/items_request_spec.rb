@@ -151,6 +151,7 @@ describe "Items API" do
       expect(response).to be_successful
       expect(response).to have_http_status(204)
       expect(Item.count).to eq(0)
+      
     end
   end
 
@@ -193,6 +194,23 @@ describe "Items API" do
       expect(error[:status]).to eq("Not Found")
       expect(error[:message]).to eq("No merchants found")
       expect(error[:code]).to eq(404)
+    end
+
+    it "can update an existing item, and updates with correct merchant" do
+      merchant_id = create(:merchant).id
+      id = create(:item).id
+      item_params = { merchant_id: merchant_id }
+      headers = {"CONTENT_TYPE" => "application/json"}
+      previous_merchant = Item.find_by(id: id).merchant_id
+
+      patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate(item_params)
+      
+      item = Item.find_by(id: id)
+
+      expect(response).to have_http_status(201)
+      expect(response).to be_successful
+      expect(item.merchant_id).to_not eq(previous_merchant)
+      expect(item.merchant_id).to eq(merchant_id)
     end
   end
 
