@@ -14,4 +14,12 @@ class ErrorMerchantSerializer
       ]
     }
   end
+
+  def serialized_json_search
+    if @error_object == "data"
+    {
+      data: {}
+    }
+    end
+  end
 end
