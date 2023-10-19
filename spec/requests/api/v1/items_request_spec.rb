@@ -33,7 +33,8 @@ describe "Items API" do
         expect(item[:attributes][:merchant_id]).to be_a (Integer)
       end
     end
-  it "sends a list of one specific merchant" do
+
+  it "sends a list of one specific item" do
     
     id = create(:item).id
 
@@ -57,6 +58,28 @@ describe "Items API" do
 
     expect(item[:attributes]).to have_key(:merchant_id)
     expect(item[:attributes][:merchant_id]).to be_a (Integer)
+  end
+
+  it "sends an error code if id does not exist for item" do
+
+    get "/api/v1/items/4454646544"
+
+    expect(response).to have_http_status(404)
+    error = JSON.parse(response.body, symbolize_names: true)[:errors][0]
+    expect(error[:status]).to eq("Not Found")
+    expect(error[:message]).to eq("No merchants found")
+    expect(error[:code]).to eq(404)
+  end
+
+  it "sends an error code if id does not exist for item" do
+
+    get "/api/v1/items/'4454646544'"
+    
+    expect(response).to have_http_status(404)
+    error = JSON.parse(response.body, symbolize_names: true)[:errors][0]
+    expect(error[:status]).to eq("Not Found")
+    expect(error[:message]).to eq("No merchants found")
+    expect(error[:code]).to eq(404)
   end
 
   it "can create a new item" do
@@ -138,20 +161,20 @@ describe "Items API" do
     expect(item.name).to eq("Kaylee's Item")
   end
 
-  xit "can update an existing item, but returns error with incorrect merchant id" do
-    merchant_id = 200
+  it "can update an existing item, but returns error with incorrect merchant id" do
+    merchant_id = 20000000
     id = create(:item).id
-    previous_merchant = Item.find_by(id: id).merchant_id
-    item_params = { merchant_id: merchant_id}
+    item_params = { merchant_id: merchant_id }
 
     headers = {"CONTENT_TYPE" => "application/json"}
 
-    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate(item: item_params)
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate(item_params)
     item = Item.find_by(id: id)
-    require 'pry';binding.pry
-    # expect(response).to have_http_status(400)
-    expect(item.merchant_id).to_not eq(previous_merchant)
-    expect(item.merchant_id).to eq(merchant_id)
+    expect(response).to have_http_status(404)
+    error = JSON.parse(response.body, symbolize_names: true)[:errors][0]
+    expect(error[:status]).to eq("Not Found")
+    expect(error[:message]).to eq("No merchants found")
+    expect(error[:code]).to eq(404)
   end
 
   it "can destroy an item" do
@@ -189,3 +212,17 @@ describe "Items API" do
     expect(item_merchant[:attributes][:name]).to be_a (String)
   end
 end
+
+# if params["merchant_id"].present?
+#   merchant = MerchantFacade.new(params).find_merchant
+#     if merchant.class == Merchant
+#       render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created
+#     else
+#       render json: ErrorMerchantSerializer.new(merchant).serialized_json, status: 404
+#     end
+# else
+#   render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created
+# end
+# end
+
+# render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created

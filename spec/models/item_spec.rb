@@ -58,3 +58,8 @@ RSpec.describe Item, type: :model do
     end
   end
 end
+    # if !Merchant.find(params[:id]).empty
+    #   render json: MerchantSerializer.new(merchant)
+    # else
+    #   ErrorMember.new("No merchants found", "NOT FOUND", 404)
+    # end

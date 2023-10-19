@@ -38,7 +38,7 @@ describe "Merchant search API" do
     expect(merchant[:attributes][:name]).to eq(merchant_4.name)
   end
 
-  it "it an array of all merchants with specific name" do
+  it "it returns an array of all merchants with specific name" do
     merchant_1 = Merchant.create!(name: "Billy's Store")
     merchant_2 = Merchant.create!(name: "Josephine's Market")
     merchant_3 = Merchant.create!(name: "Jackson's Dodge")
