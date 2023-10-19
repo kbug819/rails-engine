@@ -4,8 +4,14 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def show
-    render json: ItemSerializer.new(Item.find(params[:id]))
+    @item = ItemFacade.new(params).find_item 
+    if @item.class == Item
+      render json: ItemSerializer.new(@item)
+    else
+      render json: ErrorItemSerializer.new(@item).serialized_json, status: 404
+    end
   end
+
 
   def create
     new_item = Item.new(item_params)
@@ -18,8 +24,17 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def update
+    if params["merchant_id"].present?
+    merchant = MerchantFacade.new(params).find_merchant_for_update
+      if merchant.class == Merchant
+        render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created
+      else
+        render json: ErrorMerchantSerializer.new(merchant).serialized_json, status: 404
+      end
+  else
     render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :created
   end
+end
 
   def destroy
     if Item.delete(params[:id])

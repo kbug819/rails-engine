@@ -8,11 +8,11 @@ class Api::V1::Items::SearchController < ApplicationController
     # end
   end
   def show
-    # if Item.find_one_item(params[:id])[0] != nil
+    if Item.find_one_item(params[:name])[0] != nil
       render json: ItemSerializer.new(Item.find_one_item(params[:name])[0])
-    # else 
-      # render json: ErrorItemSerializer.new(ErrorItem.new.item_not_found)
-    # end
+    else 
+      render json: ErrorItemSerializer.new(ErrorItem.new("No items found", 'Not Found', 404)).serialized_json
+    end
 
   end
 end
