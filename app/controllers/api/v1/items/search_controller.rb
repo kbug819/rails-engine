@@ -2,7 +2,7 @@ class Api::V1::Items::SearchController < ApplicationController
   def index
     items = Item.find_all_items(params)
     if items == []
-      render json: ItemSerializer.new(items), status: 400
+      render json: ItemSerializer.new(items)
     elsif items == "error"
       render json: ErrorItemSerializer.new(items).serialized_json_min_max, status: 400
     else
